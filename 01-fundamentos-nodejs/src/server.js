@@ -9,8 +9,8 @@ const server = http.createServer((req, response) => {
 
     if (method == 'GET' && url == '/users') {
         return response
-        .setHeader('Content-type', 'application/json')
-        .end(JSON.stringify(users))
+            .setHeader('Content-type', 'application/json')
+            .end(JSON.stringify(users))
     }
 
     if (method == 'POST' && url == '/users') {
@@ -20,15 +20,14 @@ const server = http.createServer((req, response) => {
             email: 'johndoe@example.com',
         })
 
-        return response.end('Criacão de usuarios')
+        // Status 201 simboliza que a request foi um sucesso, porém que especificamente foi possivel criar um recurso.
+        return response
+            .writeHead(201)
+            .end()
     }
 
-    return response.end('Hello World')
+    return response
+        .writeHead(404).end()
 })
 
 server.listen(3333)
-
-// Nessa aula foi possível compreender como salvar/armazenar localmente na memória da aplicação informações utilizadas dentro do server (stateful).
-// Compreendido a diferença entre aplicação stateful e stateless.
-// Visto sobre os três formatos unicos de retorno referênte a servidores node.
-// Visto sobre como definir Headers (cabeçalhos) da response request. 
