@@ -1,28 +1,18 @@
 import http from 'node:http'
+import { json } from './middlewares/json.js';
 
 const users = []
 
 const server = http.createServer(async (req, response) => {
     const { method, url } = req;
 
-    const buffers = [];
-
-    for await (const chunk of req) {
-        buffers.push(chunk);
-    }
-
-
-    try {
-        req.body = JSON.parse(Buffer.concat(buffers).toString());
-    } catch {
-        req.body = null;
-    }
+   await json(req, response);
     
     console.log(method, url)
 
     if (method == 'GET' && url == '/users') {
         return response
-            .setHeader('Content-type', 'application/json')
+            
             .end(JSON.stringify(users))
     }
 
@@ -46,3 +36,7 @@ const server = http.createServer(async (req, response) => {
 })
 
 server.listen(3333)
+
+
+Visto sobre os middlewares dentro do node 
+Centralizado algumas funções dentro dos middleware
