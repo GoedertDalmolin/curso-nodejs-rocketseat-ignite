@@ -1,7 +1,8 @@
 import http from 'node:http'
 import { json } from './middlewares/json.js';
+import { Database } from './database.js';
 
-const users = []
+const database = new Database();
 
 const server = http.createServer(async (req, response) => {
     const { method, url } = req;
@@ -11,6 +12,7 @@ const server = http.createServer(async (req, response) => {
     console.log(method, url)
 
     if (method == 'GET' && url == '/users') {
+        const users = database.select('users');
         return response
             
             .end(JSON.stringify(users))
@@ -19,11 +21,13 @@ const server = http.createServer(async (req, response) => {
     if (method == 'POST' && url == '/users') {
         const { nome, email } = req.body
 
-        users.push({
+        const user = {
             id: 1,
             name: nome,
             email: email,
-        })
+        };
+
+        database.insert('users', user);
 
         // Status 201 simboliza que a request foi um sucesso, porém que especificamente foi possivel criar um recurso.
         return response
@@ -36,7 +40,3 @@ const server = http.createServer(async (req, response) => {
 })
 
 server.listen(3333)
-
-
-Visto sobre os middlewares dentro do node 
-Centralizado algumas funções dentro dos middleware
