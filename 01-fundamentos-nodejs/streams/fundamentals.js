@@ -1,5 +1,4 @@
-import process from 'node:process'
-import { Readable, Writable, Transform} from 'node:stream'
+import { Readable, Writable, Transform } from 'node:stream'
 
 class OneToHundredStream extends Readable {
     index = 1
@@ -8,23 +7,23 @@ class OneToHundredStream extends Readable {
         const i = this.index++
 
         setTimeout(() => {
-            if(i > 100) {
+            if (i > 100) {
                 this.push(null)
             } else {
                 const buf = Buffer.from(String(i));
-    
+
                 this.push(buf)
             }
 
         }, 1000)
 
-        
+
     }
 }
 
 // new OneToHundredStream().pipe(process.stdout)
 
-class  MultiplByTenStream extends Writable {
+class MultiplByTenStream extends Writable {
     _write(chunk, encoding, callback) {
         console.log(Number(chunk.toString()) * 10)
         callback()
@@ -43,8 +42,8 @@ class InverseNumberStream extends Transform {
 }
 
 new OneToHundredStream()
-.pipe(new InverseNumberStream())
-.pipe(new MultiplByTenStream())
+    .pipe(new InverseNumberStream())
+    .pipe(new MultiplByTenStream())
 
 // Visto sobre o conceito de Stream Writeble na pratica.
 // O process.stdout é uma stream que processa dados e não que le dados.
