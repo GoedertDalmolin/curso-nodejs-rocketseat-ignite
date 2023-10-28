@@ -1,43 +1,23 @@
 import http from 'node:http'
-import { randomUUID } from 'node:crypto';
-import { json } from './middlewares/json.js';
-import { Database } from './database.js';
 
-const database = new Database();
+import { json } from './middlewares/json.js';
+import { routes } from './routes.js';
+
 
 const server = http.createServer(async (req, response) => {
-    const { method, url } = req;
+    const { method, url } = req
 
-   await json(req, response);
-    
-    console.log(method, url)
+    await json(req, response)
 
-    if (method == 'GET' && url == '/users') {
-        const users = database.select('users');
-        return response
-            
-            .end(JSON.stringify(users))
+    const route = routes.find(route => {
+        return route.method === method & route.path == url
+    })
+
+    if(route) {
+        return route.handler(req, response)
     }
 
-    if (method == 'POST' && url == '/users') {
-        const { nome, email } = req.body
-
-        const user = {
-            id: randomUUID(),
-            name: nome,
-            email: email,
-        };
-
-        database.insert('users', user);
-
-        // Status 201 simboliza que a request foi um sucesso, porém que especificamente foi possivel criar um recurso.
-        return response
-            .writeHead(201)
-            .end()
-    }
-
-    return response
-        .writeHead(404).end()
+    return response.writeHead(404).end()
 })
 
 server.listen(3333)
