@@ -2,6 +2,7 @@ import http from 'node:http'
 
 import { json } from './middlewares/json.js';
 import { routes } from './routes.js';
+import internal from 'node:stream';
 
 
 const server = http.createServer(async (req, response) => {
@@ -15,8 +16,8 @@ const server = http.createServer(async (req, response) => {
 
     if(route) {
         const routeParams = req.url.match(route.path)
-
-        console.log(routeParams)
+        
+        req.params = { ...routeParams.groups }
 
         return route.handler(req, response)
     }
