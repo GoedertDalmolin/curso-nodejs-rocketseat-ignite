@@ -52,7 +52,10 @@ export class Database {
             this.#database[table][rowIndex] = {id, ...data}
             this.#persist()
         }
+        console.log('')
     }
+
+
 }
 
 
